@@ -55,10 +55,26 @@
   class Product{
     constructor(id, data){
       const thisProduct = this;
+
       thisProduct.id = id;
       thisProduct.data = data;
 
+      thisProduct.renderInMenu();
+
       console.log('new Product:', thisProduct);
+    }
+
+    renderInMenu(){
+      const thisProduct = this;
+
+      const generatedHTML = templates.menuProduct(thisProduct.data);
+      
+      thisProduct.element = utils.createDOMFromHTML(generatedHTML);
+
+      const menuContainer = document.querySelector(select.containerOf.menu);
+
+      menuContainer.appendChild(thisProduct.element);
+
     }
   };
 
