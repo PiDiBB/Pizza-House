@@ -178,18 +178,19 @@
 
               // add option price to price variable
               price += option.price;
-            } else {
-
-              // check if the option is default
-              if(option.default == true) {
+            } 
+          } else {
+            // check if the option is default
+            if(option.default == true) {
                 
-                // reduce price variable
-                price -= option.price;
-              }
+              // reduce price variable
+              price -= option.price;
             }
-          }
+          }      
         }
       }
+      thisProduct.priceSingle = price;
+      thisProduct.priceElem.innerHTML = price;
     }
   }
 
