@@ -67,6 +67,8 @@
 
       thisProduct.initOrderForm();
 
+      thisProduct.initAmountWidget();
+
       thisProduct.processOrder();
     }
 
@@ -92,7 +94,7 @@
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
       thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
-      
+      thisProduct.amountWidgetElem = thisProduct.element.querySelector(select.menuProduct.amountWidget);
     }
 
     initAccordion() {
@@ -101,29 +103,16 @@
       thisProduct.accordionTrigger.addEventListener('click', function (event) {
         event.preventDefault();
 
-        /* find the clickable trigger (the element that should react to clicking) */
-        // const clickableTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
-
-        /* START: add event listener to clickable trigger on event click */
-        // clickableTrigger.addEventListener('click', function(event){
-        /* prevent default action for event */
-        //  event.preventDefault();
-
-        /* find active product (product that has active class) */
         const activeProducts = document.querySelectorAll(select.all.menuProductsActive);
        
-
-        /* if there is active product and it's not thisProduct.element, remove class active from it */
         for (let activeProduct of activeProducts) {
           if (thisProduct.element != activeProduct) {
             activeProduct.classList.remove('active');
           }
         }
 
-        /* toggle active class on thisProduct.element */
         thisProduct.element.classList.toggle('active');
       });
-
     }
 
     initOrderForm() {
@@ -145,64 +134,49 @@
         thisProduct.processOrder();
       });
     }
+    
+    initAmountWidget() {
+      const thisProduct = this;
+      thisProduct.amountWidget = new amountWidget(thisProduct.amountWidgetElem);
+    }
 
     processOrder() {
       const thisProduct = this;
 
-      // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
       const formData = utils.serializeFormToObject(thisProduct.form);
       
-
-      // set price to default price
       let price = thisProduct.data.price;
-     
-      // for every category (param)...
       
       for (let paramId in thisProduct.data.params) {
 
-        // determine param value, e.g. paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
         const param = thisProduct.data.params[paramId];
         
-
-        // for every option in this category
         for (let optionId in param.options) {
          
-          // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
-          const option = param.options[optionId];
-          console.log(optionId);
-          
+          const option = param.options[optionId];       
 
-          // check if there is param with a name of paramId in formData and if it includes optionId
           if(formData[paramId] && formData[paramId].includes(optionId)) {
 
-            // check if the option is not default
             if(option.default != true) {
 
-              // add option price to price variable
               price += option.price;
             } 
           } else {
-            // check if the option is default
+            
             if(option.default == true) {
                 
-              // reduce price variable
               price -= option.price;
             }
           }  
           
-          // find the image .paramId-optionId (category-option)
           const optionImage = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
-          console.log(optionImage);
-
-          // check if the image is found
+          
           if(optionImage){
-        
-            // check if the option is selected
-      
+              
             if(formData[paramId] && formData[paramId].includes(optionId)){
-              // if the answer is yes, then show the image (add class active)
+              
               optionImage.classList.add(classNames.menuProduct.imageVisible);
-              // if the answer is no, then hide the image (remove class active)
+              
             } else {
               optionImage.classList.remove(classNames.menuProduct.imageVisible);
             }       
@@ -214,11 +188,55 @@
     }
   }
 
+  class amountWidget{
+    constructor(element){
+      const thisWidget = this;
+
+      thisWidget.getElements(element);
+      thisWidget.setValue();
+      thisWidget.setValue(thisWidget.input.value);  
+            
+      console.log('AmountWidget:', thisWidget);
+      console.log('constructor arguments:', element);
+    }
+
+    getElements(element){
+      const thisWidget = this;
+    
+      thisWidget.element = element;
+      thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
+      thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
+      thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
+    }
+
+    setValue(value){
+      const thisWidget = this;
+
+      const newValue = parseInt(value);
+
+      /* TODO: Add validation */
+      thisWidget.value = newValue;
+      thisWidget.input.value = thisWidget.value;
+      
+      /* TODO: Add validation */
+      if(thisWidget.value !== newValue) {
+        thisWidget.value = newValue;
+        /* TODO: Add validation */
+      } else {
+
+        if(thisWidget.value !== newValue && !isNaN(newValue)) {
+          thisWidget.value = newValue;
+        }
+      
+      }
+    }
+  }
+
   const app = {
     initMenu: function () {
       const thisApp = this;
 
-      console.log('thisApp.data:', thisApp.data);
+      //console.log('thisApp.data:', thisApp.data);
 
       for (let productData in thisApp.data.products) {
         new Product(productData, thisApp.data.products[productData]);
@@ -233,11 +251,11 @@
 
     init: function () {
       const thisApp = this;
-      console.log('*** App starting ***');
-      console.log('thisApp:', thisApp);
-      console.log('classNames:', classNames);
-      console.log('settings:', settings);
-      console.log('templates:', templates);
+      //console.log('*** App starting ***');
+      //console.log('thisApp:', thisApp);
+      //console.log('classNames:', classNames);
+      //console.log('settings:', settings);
+      //console.log('templates:', templates);
       thisApp.initData();
       thisApp.initMenu();
     },
