@@ -91,6 +91,8 @@
       thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+      thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
+      
     }
 
     initAccordion() {
@@ -109,7 +111,7 @@
 
         /* find active product (product that has active class) */
         const activeProducts = document.querySelectorAll(select.all.menuProductsActive);
-        console.log(activeProducts);
+       
 
         /* if there is active product and it's not thisProduct.element, remove class active from it */
         for (let activeProduct of activeProducts) {
@@ -149,26 +151,26 @@
 
       // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
       const formData = utils.serializeFormToObject(thisProduct.form);
-      console.log('formData', formData);
+      
 
       // set price to default price
       let price = thisProduct.data.price;
-      console.log(price);
-
+     
       // for every category (param)...
-      console.log(thisProduct.data.params);
+      
       for (let paramId in thisProduct.data.params) {
 
         // determine param value, e.g. paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
         const param = thisProduct.data.params[paramId];
-        console.log(paramId, param);
+        
 
         // for every option in this category
         for (let optionId in param.options) {
          
           // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
           const option = param.options[optionId];
-          console.log(optionId, option);
+          console.log(optionId);
+          
 
           // check if there is param with a name of paramId in formData and if it includes optionId
           if(formData[paramId] && formData[paramId].includes(optionId)) {
@@ -186,7 +188,25 @@
               // reduce price variable
               price -= option.price;
             }
-          }      
+          }  
+          
+          // find the image .paramId-optionId (category-option)
+          const optionImage = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
+          console.log(optionImage);
+
+          // check if the image is found
+          if(optionImage){
+        
+            // check if the option is selected
+      
+            if(formData[paramId] && formData[paramId].includes(optionId)){
+              // if the answer is yes, then show the image (add class active)
+              optionImage.classList.add(classNames.menuProduct.imageVisible);
+              // if the answer is no, then hide the image (remove class active)
+            } else {
+              optionImage.classList.remove(classNames.menuProduct.imageVisible);
+            }       
+          }
         }
       }
       thisProduct.priceSingle = price;
