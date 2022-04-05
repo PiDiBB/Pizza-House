@@ -171,7 +171,7 @@
     
     initAmountWidget() {
       const thisProduct = this;
-      thisProduct.amountWidget = new amountWidget(thisProduct.amountWidgetElem);
+      thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
     }
 
     processOrder() {
@@ -222,7 +222,7 @@
     }
   }
 
-  class amountWidget{
+  class AmountWidget{
     constructor(element){
       const thisWidget = this;
 
