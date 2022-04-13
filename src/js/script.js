@@ -71,19 +71,17 @@
       defaultValue: 1,
       defaultMin: 1,
       defaultMax: 9,
-    }, // CODE CHANGED
-    // CODE ADDED START
+    }, 
+    
     cart: {
       defaultDeliveryFee: 20,
     },
-    // CODE ADDED END
   };
   
   const templates = {
     menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
-    // CODE ADDED START
+    
     cartProduct: Handlebars.compile(document.querySelector(select.templateOf.cartProduct).innerHTML),
-    // CODE ADDED END
   };
 
   class Product {
@@ -253,23 +251,20 @@
       const formData = utils.serializeFormToObject(thisProduct.form);
       const params = {};
     
-      // for very category (param)
       for(let paramId in thisProduct.data.params) {
         const param = thisProduct.data.params[paramId];
     
-        // create category param in params const eg. params = { ingredients: { name: 'Ingredients', options: {}}}
         params[paramId] = {
           label: param.label,
           options: {}
         };
     
-        // for every option in this category
         for(let optionId in param.options) {
           const option = param.options[optionId];
           const optionSelected = formData[paramId] && formData[paramId].includes(optionId);
     
           if(optionSelected) {
-            // option is selected!
+            
             params[paramId].options[optionId] = option.label;
           }
         }
@@ -305,7 +300,6 @@
 
       const newValue = parseInt(value);
 
-      /* TODO: Add validation */    
       if(thisWidget.value !== newValue && !isNaN(newValue) && newValue >= (settings.amountWidget.defaultMin) && newValue <= (settings.amountWidget.defaultMax)) {
         thisWidget.value = newValue;      
       }
@@ -406,8 +400,7 @@
 
       thisCart.dom.productList.appendChild(generatedDOM);   
       thisCart.products.push(new CartProduct(menuProduct, generatedDOM));
-      // console.log('thisCart.products', thisCart.products); 
-      
+            
       thisCart.update();  
     }
 
@@ -528,8 +521,6 @@
   const app = {
     initMenu: function () {
       const thisApp = this;
-
-      //console.log('thisApp.data:', thisApp.data);
 
       for (let productData in thisApp.data.products) {
         new Product(productData, thisApp.data.products[productData]);
